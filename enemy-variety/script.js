@@ -14,7 +14,6 @@ let timeToNextRaven = 0;
 let ravenInterval = 500;
 let lastTime = 0;
 
-
 let ravens = [];
 class Raven {
   constructor() {
@@ -74,8 +73,7 @@ function drawScore() {
 }
 
 window.addEventListener('click', function(e) {
-  const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
-  console.log(detectPixelColor);
+  const detectPixelColor = collisionCtx.getImageData(e.x, e.y, 1, 1); // Chatsonic'ten durislandi
   const pc = detectPixelColor.data;
   ravens.forEach(object => {
     if (object.randomColors[0] === pc[0] && object.randomColors[1] === pc[1] && object.randomColors[2] === pc[2]) {
