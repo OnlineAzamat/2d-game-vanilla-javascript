@@ -1,9 +1,11 @@
+import { StandingLeft, StandingRight, SittingLeft, SittingRight } from "./state.js";
+
 export default class Player {
   constructor(gameWidth, gameHeight) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
-    this.states = [];
-    this.currentState = this.states[0];
+    this.states = [new StandingLeft(this), new StandingRight(this), new SittingLeft(this), new SittingRight(this)];
+    this.currentState = this.states[1];
     this.image = document.getElementById('dogImage');
     this.width = 200;
     this.height = 181.83;
@@ -14,6 +16,9 @@ export default class Player {
   }
   draw(context) {
     context.drawImage(this.image, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
+  }
+  update(input) {
+    this.currentState.handleInput(input);
   }
   setState(state) {
     this.currentState = this.states[state];
