@@ -3,6 +3,10 @@ export const states = {
   STANDING_RIGHT: 1,
   SITTING_LEFT: 2,
   SITTING_RIGHT: 3,
+  RUNNING_LEFT: 4,
+  RUNNING_RIGHT: 5,
+  JUMPING_LEFT: 6,
+  JUMPING_RIGHT: 7,
 }
 
 class State {
@@ -18,10 +22,13 @@ export class StandingLeft extends State {
   }
   enter() {
     this.player.frameY = 1;
+    this.player.speed = 0;
   }
   handleInput(input) {
-    if (input === 'PRESS right') this.player.setState(states.STANDING_RIGHT); // 6:28:11
+    if (input === 'PRESS right') this.player.setState(states.RUNNING_RIGHT); // 6:28:11
+    else if (input === 'PRESS left') this.player.setState(states.RUNNING_LEFT);
     else if (input === 'PRESS down') this.player.setState(states.SITTING_LEFT); // 6:42:19
+    else if (input === 'PRESS up') this.player.setState(states.JUMPING_LEFT);
   }
 }
 export class StandingRight extends State {
@@ -31,10 +38,13 @@ export class StandingRight extends State {
   }
   enter() {
     this.player.frameY = 0;
+    this.player.speed = 0;
   }
   handleInput(input) {
-    if (input === 'PRESS left') this.player.setState(states.STANDING_LEFT);
+    if (input === 'PRESS left') this.player.setState(states.RUNNING_LEFT);
+    else if (input === 'PRESS right') this.player.setState(states.RUNNING_RIGHT);
     else if (input === 'PRESS down') this.player.setState(states.SITTING_RIGHT);
+    else if (input === 'PRESS up') this.player.setState(states.JUMPING_RIGHT);
   }
 }
 export class SittingLeft extends State {
@@ -43,11 +53,12 @@ export class SittingLeft extends State {
     this.player = player;
   }
   enter() {
-    this.player.frameY = 8;
+    this.player.frameY = 9;
+    this.player.speed = 0;
   }
   handleInput(input) {
     if (input === 'PRESS right') this.player.setState(states.SITTING_RIGHT);
-    else if (input === 'PRESS up') this.player.setState(states.STANDING_LEFT);
+    else if (input === 'RELEASE down') this.player.setState(states.STANDING_LEFT);
   }
 }
 export class SittingRight extends State {
@@ -57,9 +68,66 @@ export class SittingRight extends State {
   }
   enter() {
     this.player.frameY = 8;
+    this.player.speed = 0;
   }
   handleInput(input) {
-    if (input === 'PRESS left') this.player.setState(states.SITTING_LEFT);
-    else if (input === 'PRESS up') this.player.setState(states.STANDING_RIGHT);
+    if (input === 'PRESS left') this.player.setState(states.SITTING_LEFT); // PRESS <-- bir marte
+    else if (input === 'RELEASE down') this.player.setState(states.STANDING_RIGHT); // RELEASE <-- knopka basilip turgansha
+  }
+}
+export class RunningLeft extends State {
+  constructor(player) {
+    super('RUNNING LEFT');
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 7;
+    this.player.speed = -this.player.maxSpeed;
+  }
+  handleInput(input) {
+    if (input === 'PRESS right') this.player.setState(states.RUNNING_RIGHT); // PRESS <-- bir marte
+    else if (input === 'RELEASE left') this.player.setState(states.STANDING_LEFT); // RELEASE <-- knopka basilip turgansha
+    else if (input === 'PRESS down') this.player.setState(states.SITTING_LEFT);
+  }
+}
+export class RunningRight extends State {
+  constructor(player) {
+    super('RUNNING RIGHT');
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 6;
+    this.player.speed = this.player.maxSpeed;
+  }
+  handleInput(input) {
+    if (input === 'PRESS left') this.player.setState(states.RUNNING_LEFT); // PRESS <-- bir marte
+    else if (input === 'RELEASE right') this.player.setState(states.STANDING_RIGHT); // RELEASE <-- knopka basilip turgansha
+    else if (input === 'PRESS down') this.player.setState(states.SITTING_RIGHT);
+  }
+}
+// JUMPING LEFT ( <-- )
+export class JumpingLeft extends State {
+  constructor(player) {
+    super('JUMPING LEFT');
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 3;
+    this.player.vy -= 20;
+  }
+  handleInput(input) {
+  }
+}
+// JUMPING RIGHT ( --> )
+export class JumpingRight extends State {
+  constructor(player) {
+    super('JUMPING RIGHT');
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 2;
+    this.player.vy -= 20;
+  }
+  handleInput(input) {
   }
 }
