@@ -7,6 +7,8 @@ import {
   RunningRight,
   JumpingLeft,
   JumpingRight,
+  FallingLeft,
+  FallingRight,
 } from "./state.js";
 
 export default class Player {
@@ -22,6 +24,8 @@ export default class Player {
       new RunningRight(this),
       new JumpingLeft(this),
       new JumpingRight(this),
+      new FallingLeft(this),
+      new FallingRight(this),
     ];
     this.currentState = this.states[1];
     this.image = document.getElementById('dogImage');
@@ -33,10 +37,21 @@ export default class Player {
     this.weight = 1;
     this.frameX = 0;
     this.frameY = 0;
+    this.maxFrame = 6;
     this.speed = 0;
-    this.maxSpeed = 10;
+    this.maxSpeed = 12;
+    this.fps = 200;
+    this.frameTimer = 0;
+    this.frameInterval = 1000/this.fps;
   }
-  draw(context) {
+  draw(context, deltaTime) {
+    if (this.frameTimer > this.frameInterval) {
+      if (this.frameX < this.maxFrame) this.frameX++;
+      else this.frameX = 0;
+      this.frameTimer = 0;
+    } else {
+      this.frameTimer += deltaTime
+    }
     context.drawImage(this.image, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
   }
   update(input) {
@@ -47,11 +62,12 @@ export default class Player {
     else if (this.x >= this.gameWidth - this.width) this.x = this.gameWidth - this.width;
     // vertical movement
     this.y += this.vy;
-    if (this.y < this.gameHeight - this.height) {
+    if (!this.onGround()) {
       this.vy += this.weight;
     } else {
       this.vy = 0;
     }
+    if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height;
   }
   setState(state) {
     this.currentState = this.states[state];
@@ -59,5 +75,6 @@ export default class Player {
   }
   onGround() {
     // 6:51:56
+    return this.y >= this.gameHeight - this.height;
   }
 }
