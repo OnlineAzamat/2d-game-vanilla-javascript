@@ -21,15 +21,29 @@ window.addEventListener('load', function() {
       this.input = new InputHandler();
       this.enemies = [];
       this.enemyTimer = 0;
+      this.enemyInterval = 1000;
     }
     update(deltaTime) {
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
       // handleEnemies
+      if (this.enemyTimer > this.enemyInterval) {
+        this.addEnemy();
+        this.enemyTimer = 0;
+      } else {
+        this.enemyTimer += deltaTime;
+      }
+      this.enemies.forEach(enemy => {
+        enemy.update(deltaTime);
+      })
     }
     draw(context) {
       this.background.draw(context);
       this.player.draw(context);
+      this.enemies.forEach(enemy => {
+        enemy.draw(context);
+        if (enemy.markedForDeletion) this.enemies.splice(this.enemies.indexOf(enemy), 1);
+      })
     }
     addEnemy() {
       this.enemies.push(new FlyingEnemy(this))
