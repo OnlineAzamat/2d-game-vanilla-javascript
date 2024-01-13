@@ -31,6 +31,8 @@ window.addEventListener('load', function() {
       this.debug = false;
       this.score = 0;
       this.winningScore = 40;
+      this.soundChew = new Audio('./assets/coinEcho.wav');
+      this.soundHit = new Audio('./assets/playerhit.mp3');
       this.fontColor = 'black';
       this.time = 0;
       this.maxTime = 30000;
