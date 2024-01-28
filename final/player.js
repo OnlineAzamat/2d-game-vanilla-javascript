@@ -97,7 +97,12 @@ export class Player {
           this.game.score-=5;
           this.game.lives--;
           this.game.soundHit.play();
-          if (this.game.lives <= 0) this.game.gameOver = true;
+          if (this.game.lives <= 0) {
+            this.game.gameOver = true;
+            if (this.score > window.localStorage.getItem('rekord')) {
+              window.localStorage.setItem('rekord', this.score);
+            }
+          }
         }
       }
     })

@@ -7,8 +7,14 @@ import { UI } from "./UI.js";
 window.addEventListener('load', function() {
   const canvas = document.getElementById('canvas1');
   const ctx = canvas.getContext('2d');
-  canvas.width = 900;
+  canvas.width = window.innerWidth;
   canvas.height = 500;
+
+  const tryAgain = document.getElementById('try-again');
+  const tryAgainBtn = document.getElementById('try-again-btn');
+  tryAgainBtn.addEventListener('click', () => {
+    location.reload();
+  })
 
   class Game {
     constructor(width, height) {
@@ -43,7 +49,13 @@ window.addEventListener('load', function() {
     }
     update(deltaTime) {
       this.time += deltaTime;
-      if (this.time > this.maxTime) this.gameOver = true;
+      if (this.time > this.maxTime) {
+        this.gameOver = true;
+        if (this.score > window.localStorage.getItem('rekord')) {
+          window.localStorage.setItem('rekord', this.score);
+        }
+        tryAgain.style.display = 'block';
+      }
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
       // handleEnemies
@@ -100,7 +112,7 @@ window.addEventListener('load', function() {
       this.enemies.push(new FlyingEnemy(this));
     }
   }
-
+  
   const game = new Game(canvas.width, canvas.height);
   let lastTime = 0;
 
